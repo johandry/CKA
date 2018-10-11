@@ -8,16 +8,16 @@ These are my notes from the Kubernetes Fundamentals training from The Linux Foun
 
 ## Chapter 2
 
-**Kubernetes**: An open-source system for automating deployment, scaling and management of containerized applications. 
+**Kubernetes**: An open-source system for automating deployment, scaling and management of containerized applications.
 *source: kubernetes.io*
 
 Built from the Google project **Borg**.
 
-Kubernetes is all about decoupled and transient services. **Decoupling** means that everything has been designed to not require anything else in particular. **Transient** means that the whole system expects various components to be terminated and replaced. A **flexible** and **scalable** environment means to have a framework that does not tie itself from one aspect to the next, and expect objects to die and to reconect to their replacements.
+Kubernetes is all about decoupled and transient services. **Decoupling** means that everything has been designed to not require anything else in particular. **Transient** means that the whole system expects various components to be terminated and replaced. A **flexible** and **scalable** environment means to have a framework that does not tie itself from one aspect to the next, and expect objects to die and to reconnect to their replacements.
 
 Kubernetes deploy a large number of microservices. Other parties (internal or external to K8s) expect that there are many possible microservices available to respond a request, to die and be replaced.
 
-The comunication between components is API call-driven. It's stored in JSON but written in YAML. K8s convert from YAML to JSON prior store it in the DB.
+The communication between components is API call-driven. It's stored in JSON but written in YAML. K8s convert from YAML to JSON prior store it in the DB.
 
 Other solutions to Kubernetes are:
 
@@ -28,21 +28,21 @@ Other solutions to Kubernetes are:
 
 **Kubernetes Architecture:**
 
-![Kubernetes Architecture](/Users/johandry/Desktop/Kubernetes Fundamentals/images/02-01-Kubernetes Architecture.png)
+![Kubernetes Architecture](images/02-01-Kubernetes Architecture.png)
 
 Kubernetes is made of a central manager (master) and some worker nodes, although both can run in a single machine or node. The manager runs an API server (`kube-apiserver`), a scheduler (`kube-scheduler`), controllers and a storage system (`etcd`).
 
-Kubernetes exposes an API which could be accesible with `kubectl` or your own client. The scheduler sees the requests for running containers comming to the API and find a node to run that container in. Each node runs a `kubelet` and a proxy (`kube-proxy`). Kubelet receives requests tu run containers, manage resources and watches over them in the local node. The proxy creates and manage networking rules to expose the container on the network.
+Kubernetes exposes an API which could be accessible with `kubectl` or your own client. The scheduler sees the requests for running containers coming to the API and find a node to run that container in. Each node runs a `kubelet` and a proxy (`kube-proxy`). Kubelet receives requests tu run containers, manage resources and watches over them in the local node. The proxy creates and manage networking rules to expose the container on the network.
 
 A **Pod** consist of one or more containers which share an IP address, access to storage and namespace. A container in a pod runs an application, and the secondary containers supports such application.
 
 Orchestration is managed though a series of watch-loops, or **controllers** that check with the <u>API server</u> for a particular object state, modifying the object until declares the desired state.
 
-A **Deployment** is a controller that ensures that resources are available, and then deploys a ReplicaSet. The **ReplicaSet** is a controller which deploys and restart containers until the requesterd number of containers running. The ReplicationController was deprecated and replaced by Deployment. 
+A **Deployment** is a controller that ensures that resources are available, and then deploys a ReplicaSet. The **ReplicaSet** is a controller which deploys and restart containers until the requested number of containers running. The ReplicationController was deprecated and replaced by Deployment.
 
 There is also **Jobs** and **CronJobs** controllers to handle single or recurring tasks.
 
-**Labels** are strings part of the object metadata used to manage the Pods, they can be used to check or changing the state of objects without having to know the name or UID. Nodes can have **taints** to discourage Pod assignemnt, unless the Pod has a **tolerations** in the metadata.
+**Labels** are strings part of the object metadata used to manage the Pods, they can be used to check or changing the state of objects without having to know the name or UID. Nodes can have **taints** to discourage Pod assignment, unless the Pod has a **toleration** in the metadata.
 
 There is also **annotations** in metadata which is information used by third-party agents or tools.
 
@@ -61,7 +61,7 @@ Tools:
 
 To configure and manage the cluster we'll use `kubectl`.  This command use `~/.kube/config` as configuration file with all the Kubernetes endpoints that you might use.
 
-A **context** is a conbination of a cluster and user credentials. To switch between contexts or cluster use the command:
+A **context** is a combination of a cluster and user credentials. To switch between contexts or cluster use the command:
 
 ```bash
 kubectl config use-context NAME
@@ -96,11 +96,11 @@ kubectl create -f https://git.io/weave-kube
 
 Installing a Pod Network may be the next step, there are several to choose:
 
-* **Calico**: A flat layer 3 network which communicate without IP encapsulation. It's used in production, It's a simple and flexible networking model, scales well for large environments. It supports Network Policies 
+* **Calico**: A flat layer 3 network which communicate without IP encapsulation. It's used in production, It's a simple and flexible networking model, scales well for large environments. It supports Network Policies
 * **Canal**: Is part of the Calico project. Allows integration with Flannel and implementation of Network Policies. It has the best of Calico and Flannel.
-* **Flannel**: A layer 3 IPv4 network between nodes. Focused on traffic between hosts, not containers, can use one of several backend mechanisms such as VXLAN. There is a `flanneld` agent on each node to allocate subnet leases for the host. It's easier to deploy it prior any Pod. While it's easier to deploy and supports a wide range of architectures, it does not support the use of Network Policies. 
+* **Flannel**: A layer 3 IPv4 network between nodes. Focused on traffic between hosts, not containers, can use one of several backend mechanisms such as VXLAN. There is a `flanneld` agent on each node to allocate subnet leases for the host. It's easier to deploy it prior any Pod. While it's easier to deploy and supports a wide range of architectures, it does not support the use of Network Policies.
 * **Kube-router**: A single binary to "do it all". At this time it's in alpha stage.
-* **Romana**: aimed at network and security automation, large clusters, IPAM-aware topoogy and integration with `kops`
+* **Romana**: aimed at network and security automation, large clusters, IPAM-aware topology and integration with `kops`
 * **Weave Net**: Add-on for CNI-enabled clusters.
 
 **CNI**: Container Network Interface, which is a CNCF project. Several containers runtime use CNI.
@@ -112,7 +112,7 @@ Other tools to install Kubernetes:
 * **`kubespary`** : Ansible playbook to setup Kubernetes on various OS. Once known as kargo.
 * **`kops`**: creates a Kubernetes cluster on AWS, in beta for GKE and alpha for VMware
 * **`kube-aws`**: creates a Kubernetes cluster on AWS using Cloud Formation.
-* **`kubicorn`**: leverages the use of `kubeadm` to build a cluster. 
+* **`kubicorn`**: leverages the use of `kubeadm` to build a cluster.
 
 The best way to learn how to install Kubernetes using the manual commands is the [kelsey hightower walkthorugh](https://github.com/kelseyhightower/kubernetes-the-hard-way) and [kubernetes the hard way](https://github.com/kelseyhightower/kubernetes-the-hard-way).
 
@@ -142,7 +142,7 @@ For any configuration, it's required some components as **systemd**. This is an 
       After=kube-apiserver.service
       [Service]
       ExecStartPre=/usr/bin/curl -L -o /opt/bin/kube-controller-manager -z /opt/bin/kube-controller-manager https://storage.googleapis.com/kubernetes-release/release/v1.7.6/bin/linux/amd64/kube-controller-manager
-      ExecStartPre=/usr/bin/chmod +x /opt/bin/kube-controller-manager
+      ExecStartPre=/usr/bin/systemd +x /opt/bin/kube-controller-manager
       ExecStart=/opt/bin/kube-controller-manager \
       --service-account-private-key-file=/opt/bin/kube-serviceaccount.key \
       --root-ca-file=/var/run/kubernetes/apiserver.crt \
@@ -154,11 +154,11 @@ For any configuration, it's required some components as **systemd**. This is an 
 
 This is not a perfect unit file, it downloads the controller binary and set the permissions to run. Every component is highly configurable.
 
-Other option is to run the components as containers, this is what `kubeadm` does. There is a binary named **hyperkube** also avialable as a container image **gcr.io/google_containers/hyperkube**.
+Other option is to run the components as containers, this is what `kubeadm` does. There is a binary named **hyperkube** also available as a container image **gcr.io/google_containers/hyperkube**.
 
-This method runs **kubelet** as a system daemon and configure it with a manifest specifing how to run the other components. The **kubelet** will manage them as pods, making sure they get restarted if they die.
+This method runs **kubelet** as a system daemon and configure it with a manifest specifying how to run the other components. The **kubelet** will manage them as pods, making sure they get restarted if they die.
 
-To get help usage executig:
+To get help usage executing:
 
 ```bash
 docker run --rm gcr.io/google_containers/hyperkube:v1.9.2 /hyperkube apiserver --help
@@ -181,7 +181,7 @@ The `_output/bin` directory will contain all the built binaries.
 
 [Lab 3.1](https://lms.quickstart.com/custom/858487/LAB_3.1.pdf): Install Kubernetes
 
-**Solution**: 
+**Solution**:
 
 Create a `Vagrantfile` with the following content:
 
@@ -209,16 +209,16 @@ The vagrant provisioning script on the master node is about installing all the d
 apt-get update && apt-get install -y apt-transport-https curl
 echo "deb http://apt.kubernetes.io/ kubernetes-xenial main" > /etc/apt/sources.list.d/kubernetes.list
 curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
-apt-get update && apt-get upgrade -y 
+apt-get update && apt-get upgrade -y
 
 # Installing Docker, kubeadm, kubelet, kubectl and Kubernetes CNI
 apt-get update
 apt-get install -y \
-	docker.io \
-    kubeadm=1.11.1-00 \
-    kubelet=1.11.1-00 \
-    kubectl=1.11.1-00 \
-    kubernetes-cni=0.6.0-00
+  docker.io \
+  kubeadm=1.11.1-00 \
+  kubelet=1.11.1-00 \
+  kubectl=1.11.1-00 \
+  kubernetes-cni=0.6.0-00
 apt-mark hold docker.io kubelet kubeadm kubectl kubernetes-cni
 swapoff -a
 systemctl enable docker.service
@@ -231,9 +231,9 @@ The script is going to install the latest supported version of Docker, and the v
 ```bash
 # Installing Kubernetes by kubeadmin
 kubeadm init \
-	--pod-network-cidr 192.168.0.0/16 \
-	--apiserver-advertise-address=10.0.0.10 \
-	--apiserver-cert-extra-sans=localhost
+  --pod-network-cidr 192.168.0.0/16 \
+  --apiserver-advertise-address=10.0.0.10 \
+  --apiserver-cert-extra-sans=localhost
 
 # Installing Canal
 kubectl apply -f https://docs.projectcalico.org/v3.1/getting-started/kubernetes/installation/hosted/canal/rbac.yaml --kubeconfig /etc/kubernetes/admin.conf
@@ -250,7 +250,7 @@ cp /home/vagrant/shared_folder/config /home/vagrant/.kube/
 chown vagrant:vagrant -R /home/vagrant/.kube
 ```
 
-The command `kubeadm init` will install and configure Kubernetes, it's important to use the network CIDR `192.168.0.0/16` because it's the same used by Calico. Also `localhost` is used to generate the certificates to make it possible to access the cluster API from the guest machine. The `remote_config` file is the same as the original kubeconfig just replaing the master IP for `localhost`.
+The command `kubeadm init` will install and configure Kubernetes, it's important to use the network CIDR `192.168.0.0/16` because it's the same used by Calico. Also `localhost` is used to generate the certificates to make it possible to access the cluster API from the guest machine. The `remote_config` file is the same as the original kubeconfig just replacing the master IP for `localhost`.
 
 This solution install Canal but it could also install Calico if you replace those 2 lines for:
 
@@ -281,7 +281,7 @@ There should be one node in the cluster (master) and all the pods should be runn
 
 Execute `vagrant destroy` to destroy the VM's and the cluster.
 
-Modify the Vagrantfile to define the master and the worker nodes. In the master provisioning script, get the node ip adddress, kubeadm token and token hash to save them in the shared folder:
+Modify the Vagrantfile to define the master and the worker nodes. In the master provisioning script, get the node ip address, kubeadm token and token hash to save them in the shared folder:
 
 ```bash
 token=$(kubeadm token list | tail -2 | head -1 | cut -f1 -d' ')
@@ -291,7 +291,7 @@ echo $token > /home/vagrant/shared_folder/token
 echo $token_ca_cert > /home/vagrant/shared_folder/token_ca_cert.hash
 ```
 
-The token and the token certificate hash are required by `kubeadm join` to join the worker to the cluster. Only the master node knows these 2, so they are saved into the shared directory to be accesible by the worker(s).
+The token and the token certificate hash are required by `kubeadm join` to join the worker to the cluster. Only the master node knows these 2, so they are saved into the shared directory to be accessible by the worker(s).
 
 Also, assign to `kubelet` the correct node IP address and restart the daemon:
 
@@ -311,9 +311,9 @@ token_ca_cert=$(cat /home/vagrant/shared_folder/token_ca_cert.hash)
 
 # Adding Worker to Master running on https://10.0.0.10:6443
 kubeadm join \
-	--token $token \
-	--discovery-token-ca-cert-hash sha256:$token_ca_cert \
-	10.0.0.10:6443
+  --token $token \
+  --discovery-token-ca-cert-hash sha256:$token_ca_cert \
+  10.0.0.10:6443
 ```
 
 The final and easily customizable Vagrantfile is located at `Solutions/Lab_03/Vagrantfile`.
@@ -343,7 +343,7 @@ vagrant destroy
 And to cleanup everything, execute:
 
 ```bash
-rm shared_folder/* 
+rm shared_folder/*
 rm *.log
 rm -rf .vagrant/
 vagrant box remove ubuntu/bionic64 --all
@@ -390,7 +390,7 @@ kubectl get deployments nginx --export -o yaml
 
 You can get the manifest file in JSON format using `-o json`.
 
-The container in the deployed pods are running but are not accesible from outside the cluster. To view the nginx default web page, you need to create a **service** using either the command `expose` or modifying the manifest file. Executing `kubectl expose deployment/nginx` will throw an error because the `--port` flag is not used. So we either modify the manifest file adding the 3 lines to define the `ports` at the `image:` section, and then use the `replace` command to apply the change, like this:
+The container in the deployed pods are running but are not accessible from outside the cluster. To view the nginx default web page, you need to create a **service** using either the command `expose` or modifying the manifest file. Executing `kubectl expose deployment/nginx` will throw an error because the `--port` flag is not used. So we either modify the manifest file adding the 3 lines to define the `ports` at the `image:` section, and then use the `replace` command to apply the change, like this:
 
 ```yaml
 containers:
@@ -404,7 +404,7 @@ containers:
 
 Then: `kubectl replace -f nginx.yaml`
 
-Here we used the `replace` command because the container was create with the `create` subcommand. The best way from the very begining was to use the subcommand `apply` so this is the only command to use when we have to update the deployment. Like this: `kubectl apply -f nginx.yaml`
+Here we used the `replace` command because the container was create with the `create` sub-command. The best way from the very beginning was to use the sub-command `apply` so this is the only command to use when we have to update the deployment. Like this: `kubectl apply -f nginx.yaml`
 
 To verify the change, execute:
 
@@ -426,7 +426,7 @@ kubectl describe pod nginx-UUID | grep 'Node:'
 
 ~~And to watch the traffic going back and forward on that container, login into the node where the pod is running to use the command `tcpdump` on the `tun10` interface: `sudo tcpdump -i tunl0`~~
 
-Now use `curl` to access the pod endpoint ~~and see all the messages going back and forth~~, but as the endpoint IP of the pod is not accesible from the guest computer, the curl has to be executed from the node where it's running.
+Now use `curl` to access the pod endpoint ~~and see all the messages going back and forth~~, but as the endpoint IP of the pod is not accessible from the guest computer, the curl has to be executed from the node where it's running.
 
 ```bash
 ip=$(kubectl get ep nginx -o jsonpath='{.subsets[0].addresses[0].ip}')
@@ -447,13 +447,13 @@ And the number of endpoint addresses have also increased, one per replica:
 ```bash
 kubectl get endpoints nginx
 ip_addresses=$(kubectl get ep nginx -o jsonpath='{.subsets[0].addresses[*].ip}')
-for ip in ip_addresses; do 
-	echo "getting http://$ip:80"
-	vagrant ssh worker -c "curl http://${ip}:80"
+for ip in ip_addresses; do
+  echo "getting http://$ip:80"
+  vagrant ssh worker -c "curl http://${ip}:80"
 done
 ```
 
-Using the endpoint address is not good nor practical as they will change everytime the pod is restored. List the pods and delete one of them, then watch how a new one takes its place and the endpoint change:
+Using the endpoint address is not good nor practical as they will change every time the pod is restored. List the pods and delete one of them, then watch how a new one takes its place and the endpoint change:
 
 ```bash
 kubectl get pods -o wide
@@ -463,7 +463,7 @@ kubectl get pods -o wide
 kubectl get endpoints nginx
 ```
 
-There is no need to get the new pod IP address to access the nginx web page, using the service IP or, in this case: Cluster IP, is enough and better. But, same as the endpoints, the Cluster IP is only accesssible from within the cluster so use the `curl` command from any node of the cluster, i.e. the master node.
+There is no need to get the new pod IP address to access the nginx web page, using the service IP or, in this case: Cluster IP, is enough and better. But, same as the endpoints, the Cluster IP is only accessible from within the cluster so use the `curl` command from any node of the cluster, i.e. the master node.
 
 ```bash
 kubectl get services nginx
@@ -474,7 +474,7 @@ vagrant ssh master -c "curl http://${ip}:${port}"
 
 To pause and resume, use the commands `vagrant halt` and `vagrant up`. Or, to destroy and partially cleanup execute:
 
-```
+```bash
 vagrant destroy
 rm *.yaml
 rm *.log
@@ -483,7 +483,7 @@ rm shared_folder/*
 
 ## Sources
 
-- **Certified Kubernetes Administrator (CKA)**:
+* **Certified Kubernetes Administrator (CKA)**:
 
   Program: https://www.cncf.io/certification/cka/
 
@@ -495,18 +495,17 @@ rm shared_folder/*
 
   Exam Tips: https://www.cncf.io/certification/tips
 
-- **Kubernetes Fundamental Labs**: https://lms.quickstart.com/custom/858487/LFS258-Labs_V2018-08-06.pdf
+* **Kubernetes Fundamental Labs**: https://lms.quickstart.com/custom/858487/LFS258-Labs_V2018-08-06.pdf
 
-- **Kubernetes Fundamental Solutions**: https://training.linuxfoundation.org/cm/LFS258/
+* **Kubernetes Fundamental Solutions**: https://training.linuxfoundation.org/cm/LFS258/
 
-  Execute: `./getsol.sh`
+  Require credentials, use: `getsol.sh`
 
 ## TODO
 
-- [ ] Review **Kompose**
-- [ ] Read about **Canal**
-- [x] Include **Canal** into the Vagrant project Lab 3
-- [ ] Add more workers to the Vagrant project Lab 3
-- [ ] Review **kubespary**
-- [ ] Review **kubicorn**
-
+* [ ] Review **Kompose**
+* [ ] Read about **Canal**
+* [x] Include **Canal** into the Vagrant project Lab 3
+* [ ] Add more workers to the Vagrant project Lab 3
+* [ ] Review **kubespary**
+* [ ] Review **kubicorn**
