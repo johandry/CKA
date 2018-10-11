@@ -28,7 +28,7 @@ Other solutions to Kubernetes are:
 
 **Kubernetes Architecture:**
 
-![Kubernetes Architecture](images/02-01-Kubernetes Architecture.png)
+![Kubernetes Architecture](./images/02-01-Kubernetes Architecture.png)
 
 Kubernetes is made of a central manager (master) and some worker nodes, although both can run in a single machine or node. The manager runs an API server (`kube-apiserver`), a scheduler (`kube-scheduler`), controllers and a storage system (`etcd`).
 
