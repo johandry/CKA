@@ -1,0 +1,3 @@
+.vagrant
+*.log
+shared_folder/*

@@ -1,0 +1,48 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.configure("2") do |config|
+  config.vm.box = "ubuntu/bionic64"
+  config.vm.network "forwarded_port", guest: 6443, host: 6443
+  config.vm.hostname = "master"
+  config.vm.network "private_network", ip: "10.0.0.10"
+  config.vm.synced_folder "./shared_folder", "/home/vagrant/shared_folder"
+  config.vm.provision "shell", inline: <<-SHELL
+    # Upgrading system and installing dependencies
+    apt-get update && apt-get install -y apt-transport-https curl
+    echo "deb http://apt.kubernetes.io/ kubernetes-xenial main" > /etc/apt/sources.list.d/kubernetes.list
+    curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
+    apt-get update && apt-get upgrade -y 
+
+    # Installing Docker, kubeadm, kubelet, kubectl and Kubernetes CNI
+    apt-get update
+    apt-get install -y \
+      docker.io \
+        kubeadm=1.11.1-00 \
+        kubelet=1.11.1-00 \
+        kubectl=1.11.1-00 \
+        kubernetes-cni=0.6.0-00
+    apt-mark hold docker.io kubelet kubeadm kubectl kubernetes-cni
+    swapoff -a
+    systemctl enable docker.service
+    
+    # Installing Kubernetes by kubeadmin
+    kubeadm init \
+      --pod-network-cidr 192.168.0.0/16 \
+      --apiserver-advertise-address=10.0.0.10 \
+      --apiserver-cert-extra-sans=localhost
+
+    # Installing Calico
+    kubectl apply -f https://docs.projectcalico.org/v2.6/getting-started/kubernetes/installation/hosted/kubeadm/1.6/calico.yaml --kubeconfig /etc/kubernetes/admin.conf
+
+    # Only in non-production environments:
+    kubectl taint nodes --all node-role.kubernetes.io/master- --kubeconfig /etc/kubernetes/admin.conf
+
+    # Share kubeconfig and copy it for user 'vagrant'
+    cp /etc/kubernetes/admin.conf /home/vagrant/shared_folder/config
+    sed 's/10.0.0.10/localhost/' /etc/kubernetes/admin.conf > /home/vagrant/shared_folder/remote_config
+    mkdir -p /home/vagrant/.kube
+    cp /home/vagrant/shared_folder/config /home/vagrant/.kube/
+    chown vagrant:vagrant -R /home/vagrant/.kube
+  SHELL
+end
