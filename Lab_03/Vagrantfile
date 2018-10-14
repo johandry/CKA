@@ -1,9 +1,12 @@
 MASTER_IP = "10.0.0.10"
 WORKER_IP = "10.0.0.101"
 
+MIN_SERVICE_NODEPORT   = 30000
+MIN_SERVICE_GUEST_PORT = 3000
+
 H1 = <<-SHELL
   h1(){
-    H1="\x1B[94;1m==[ "
+    H1="\x1B[93;1m==[ "
     H0=" ]==\x1B[0m"
     echo -e $H1$1$H0"\n"
   }
@@ -11,12 +14,12 @@ SHELL
 
 NODEIP = <<-SHELL
   node_ip() {
+    [[ -z $1 ]] && return
     IP=$1
     echo "KUBELET_EXTRA_ARGS=--node-ip='${IP}'" >/etc/default/kubelet
     systemctl daemon-reload
     systemctl restart kubelet
   }
-
 SHELL
 
 PROVISION_KUBERNETES = <<-SHELL
@@ -100,6 +103,24 @@ PROVISION_WORKER = <<-SHELL
   #{PROVISION_KUBECONFIG}
 SHELL
 
+env_ports=ENV["PORTS"]
+env_ports="" if env_ports == nil
+
+ports = Hash.new
+env_ports.split(':').each do |pair| 
+  p=pair.split('>')
+
+  if p.length == 1
+    guest = p[0]
+    host = (MIN_SERVICE_GUEST_PORT + guest.to_i - MIN_SERVICE_NODEPORT).to_s
+  else
+    host = p[0]
+    guest = p[1]
+  end
+
+  ports[host] = guest
+end
+
 Vagrant.configure("2") do |config|
   config.vm.box = "ubuntu/bionic64"
 
@@ -143,9 +164,9 @@ Vagrant.configure("2") do |config|
       libvirt__forward_mode: "none",
       libvirt__network_name: "kubernetes",
       libvirt__netmask: "255.255.255.0"
-    (8000..9000).each do |port|
-      w.vm.network "forwarded_port", guest: port, host: port
-    end
+    ports.each { |host, guest|
+      w.vm.network :forwarded_port, host: host, guest: guest
+    }
     w.vm.provision "shell", inline: "#{NODEIP} node_ip #{WORKER_IP}"
     w.vm.provision "shell", inline: PROVISION_WORKER
   end
