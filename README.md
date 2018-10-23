@@ -41,6 +41,6 @@ These are my notes from the Kubernetes Fundamentals training from The Linux Foun
 * [ ] Review **Kompose**
 * [ ] Read about **Canal**
 * [x] Include **Canal** into the Vagrant project Lab 3
-* [ ] Add more workers to the Vagrant project Lab 3
+* [x] Add more workers to the Vagrant project Lab 3. Done in project: [johandry](https://github.com/johandry/KoV)/KoV
 * [ ] Review **kubespary**
 * [ ] Review **kubicorn**
