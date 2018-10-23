@@ -1,0 +1,37 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    run: hog
+  namespace: low-usage-limits
+  name: hog
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      run: hog
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        run: hog
+    spec:
+      containers:
+      - image: vish/stress
+        name: hog
+        resources:
+          limits:
+            cpu: "1"
+            memory: "4Gi"
+          requests:
+            cpu: "0.5"
+            memory: "500Mi"
+        args:
+        - -cpus
+        - "2"
+        - -mem-total
+        - "950Mi"
+        - -mem-alloc-size
+        - "100Mi"
+        - -mem-alloc-sleep
+        - "1s"

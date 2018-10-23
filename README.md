@@ -12,7 +12,9 @@ These are my notes from the Kubernetes Fundamentals training from The Linux Foun
 
    **Lab 3**: [Lab_03/Vagrantfile](./Lab_03/Vagrantfile)
 
-4. **Chapter 4**: Kubernetes Architecture
+4. **Chapter 4**: [Kubernetes Architecture](Ch04.md)
+
+5. **Chapter 5**: APIs and Access
 
 ## Sources
 
