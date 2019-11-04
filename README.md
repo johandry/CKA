@@ -14,7 +14,7 @@ These are my notes from the Kubernetes Fundamentals training from The Linux Foun
 
 4. **Chapter 4**: [Kubernetes Architecture](Ch04.md)
 
-5. **Chapter 5**: APIs and Access
+5. **Chapter 5**: [APIs and Access](Ch05.md)
 
 ## Sources
 
@@ -35,6 +35,11 @@ These are my notes from the Kubernetes Fundamentals training from The Linux Foun
 * **Kubernetes Fundamental Solutions**: https://training.linuxfoundation.org/cm/LFS258/
 
   Require credentials, use: `getsol.sh`
+
+## Other resources
+
+- https://www.cncf.io/wp-content/uploads/2019/02/rx-m-webinar-everything-you-need-to-know-about-the-cka-ckad.pdf
+- https://medium.com/platformer-blog/how-i-passed-the-cka-certified-kubernetes-administrator-exam-8943aa24d71d
 
 ## TODO
 
